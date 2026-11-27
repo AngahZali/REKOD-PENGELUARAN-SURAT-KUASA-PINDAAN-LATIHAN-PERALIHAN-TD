@@ -754,7 +754,7 @@
         <div class="kad-figure">
           <div class="label-figure">Jumlah Surat Keluar</div>
           <div class="nilai-figure" id="figTotalSurat">0</div>
-          <div class="catatan-figure">Kuasa & Pindaan keseluruhan</div>
+          <div class="catatan-figure">Semua jenis surat keseluruhan</div>
         </div>
       </div>
 
@@ -1008,6 +1008,8 @@
             <select class="jenis-surat-item" required>
               <option value="SURAT KUASA">Surat Kuasa</option>
               <option value="SURAT PINDAAN">Surat Pindaan</option>
+              <option value="SURAT PENGECUALIAN">Surat Pengecualian</option>
+              <option value="SURAT PEMBATALAN">Surat Pembatalan</option>
             </select>
           </div>
           <div class="medan">
@@ -1341,6 +1343,8 @@
 
       const bilKuasa = rekodAsas.filter(r => r.jenisSurat === "SURAT KUASA").length;
       const bilPindaan = rekodAsas.filter(r => r.jenisSurat === "SURAT PINDAAN").length;
+      const bilPengecualian = rekodAsas.filter(r => r.jenisSurat === "SURAT PENGECUALIAN").length;
+      const bilPembatalan = rekodAsas.filter(r => r.jenisSurat === "SURAT PEMBATALAN").length;
       const bilPegawai = rekodAsas.filter(r => r.kategori === "PEGAWAI").length;
       const bilLLP = rekodAsas.filter(r => r.kategori === "LLP").length;
 
@@ -1349,8 +1353,11 @@
       instCartaJenis = new Chart(ctx1, {
         type: "doughnut",
         data: {
-          labels: ["Surat Kuasa", "Surat Pindaan"],
-          datasets: [{ data: [bilKuasa, bilPindaan], backgroundColor: ["#071219", "#d97706"] }]
+          labels: ["Surat Kuasa", "Surat Pindaan", "Surat Pengecualian", "Surat Pembatalan"],
+          datasets: [{
+            data: [bilKuasa, bilPindaan, bilPengecualian, bilPembatalan],
+            backgroundColor: ["#071219", "#d97706", "#2563eb", "#dc2626"]
+          }]
         },
         options: { responsive: true, plugins: { legend: { position: "bottom" } } }
       });
