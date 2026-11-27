@@ -40,7 +40,6 @@
         linear-gradient(160deg, #071219 0%, #0c1a24 55%, #08131a 100%);
     }
 
-    /* TOPBAR SEL PERALIHAN */
     .topbar {
       background: rgba(7, 18, 25, 0.96);
       border-bottom: 1px solid var(--sempadan-gelap);
@@ -136,7 +135,6 @@
       cursor: pointer;
     }
 
-    /* BEKAS HALAMAN */
     .bekas-halaman {
       max-width: 1200px;
       margin: 24px auto 48px;
@@ -151,7 +149,6 @@
       display: block;
     }
 
-    /* PORTAL LUAR: BORANG REKOD PENGELUARAN SURAT KUASA DAN PINDAAN */
     .susun-luar {
       display: grid;
       grid-template-columns: 0.9fr 1.1fr;
@@ -173,49 +170,12 @@
       box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
     }
 
-    .tag-unit {
-      display: inline-block;
-      background: rgba(134, 196, 140, 0.16);
-      color: var(--pil-hijau);
-      border: 1px solid rgba(134, 196, 140, 0.35);
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 11.5px;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-      margin-bottom: 14px;
-    }
-
     .kad-hero-gelap h2 {
       margin: 0 0 12px;
       font-size: 32px;
       line-height: 1.18;
       font-weight: 800;
       color: #ffffff;
-    }
-
-    .kad-hero-gelap p {
-      margin: 0 0 18px;
-      font-size: 14px;
-      color: #cbd5e1;
-      line-height: 1.6;
-    }
-
-    .senarai-info-ringkas {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 20px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .senarai-info-ringkas li {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 13px;
-      color: #e2e8f0;
     }
 
     .panel-borang {
@@ -384,7 +344,6 @@
       color: #064e3b;
     }
 
-    /* BAHAGIAN STAF (TERLINDUNG PIN) */
     .baris-figure {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -444,7 +403,6 @@
       gap: 8px;
     }
 
-    /* KALENDAR KEHADIRAN HARIAN STAF */
     .panel-kalendar {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
@@ -604,6 +562,12 @@
       vertical-align: top;
     }
 
+    .badge-kosong {
+      color: #dc2626;
+      font-weight: 700;
+      font-size: 11.5px;
+    }
+
     #bekasQR {
       display: flex;
       justify-content: center;
@@ -620,7 +584,6 @@
       background: #f8fafc;
     }
 
-    /* MODAL LOGIN STAF */
     .tirai-modal {
       display: none;
       position: fixed;
@@ -658,7 +621,6 @@
 </head>
 <body>
 
-  <!-- BAR ATAS PORTAL -->
   <header class="topbar">
     <div class="topbar-dalam">
       <div class="jenama-kiri">
@@ -680,7 +642,6 @@
     </div>
   </header>
 
-  <!-- MODAL LOGIN STAF -->
   <div id="modalLoginStaf" class="tirai-modal">
     <div class="kad-modal">
       <h3 style="margin:0 0 6px; color:#071219; font-size:17px;">Login Staf Bertugas</h3>
@@ -703,7 +664,6 @@
 
   <main class="bekas-halaman">
 
-    <!-- PORTAL LUAR (BORANG PENGELUARAN) -->
     <section id="hal-borang" class="halaman aktif">
       <div class="susun-luar">
 
@@ -716,21 +676,21 @@
             <div class="bar-seksyen">1. MAKLUMAT PENGAMBIL / WAKIL</div>
             <div class="grid-2">
               <div class="medan">
-                <label>No. Tentera *</label>
-                <input type="text" id="noTentera" placeholder="Contoh: 1123456" required />
+                <label>No. Tentera Wakil *</label>
+                <input type="text" id="noTentWakil" placeholder="Contoh: 1123456" required />
               </div>
               <div class="medan">
-                <label>No. Telefon *</label>
-                <input type="tel" id="noTelefon" placeholder="Contoh: 012-3456789" required />
+                <label>No. Telefon Wakil *</label>
+                <input type="tel" id="noTelWakil" placeholder="Contoh: 012-3456789" required />
               </div>
             </div>
             <div class="medan">
-              <label>Pangkat & Nama Penuh *</label>
-              <input type="text" id="nama penuh" placeholder="Contoh: SSJN AHMAD BIN ALI" required />
+              <label>Pangkat & Nama Penuh Wakil *</label>
+              <input type="text" id="namaWakil" placeholder="Contoh: SSJN AHMAD BIN ALI" required />
             </div>
             <div class="medan">
-              <label>Pasukan / Unit  *</label>
-              <input type="text" id="pasukan" placeholder="Contoh: 1 RAMD / MK TD" required />
+              <label>Pasukan / Unit Wakil *</label>
+              <input type="text" id="pasukanWakil" placeholder="Contoh: 1 RAMD / MK TD" required />
             </div>
 
             <div class="bar-seksyen" style="margin-top:16px;">
@@ -774,7 +734,6 @@
       </div>
     </section>
 
-    <!-- DASHBOARD STAF (HANYA TERBUKA SELEPAS LOGIN STAF) -->
     <section id="hal-dashboard" class="halaman">
       <div class="baris-figure">
         <div class="kad-figure hijau">
@@ -807,7 +766,6 @@
           </button>
         </div>
 
-        <!-- KALENDAR KEHADIRAN HARIAN -->
         <div class="panel-kalendar">
           <div class="kepala-kalendar">
             <div class="tajuk-bulan" id="labelBulanKalendar">Bulan</div>
@@ -873,10 +831,10 @@
               <tr>
                 <th>ID Sesi</th>
                 <th>Tarikh & Masa</th>
-                <th>Wakil</th>
-                <th>Jenis</th>
+                <th>Details Wakil</th>
+                <th>Jenis Surat</th>
                 <th>Kategori</th>
-                <th>Pemilik Surat</th>
+                <th>Details Surat Diambil (Pemilik)</th>
                 <th>Pengesahan</th>
               </tr>
             </thead>
@@ -886,7 +844,6 @@
       </div>
     </section>
 
-    <!-- KOD QR KAUNTER (STAF) -->
     <section id="hal-qr" class="halaman">
       <div class="panel-staf" style="max-width:520px; margin:auto;">
         <div class="medan">
@@ -905,7 +862,6 @@
       </div>
     </section>
 
-    <!-- SANDARAN DATA BROWSER (STAF) -->
     <section id="hal-sandaran" class="halaman">
       <div class="panel-staf" style="max-width:640px; margin:auto;">
         <div class="bar-seksyen">SANDARAN & PULIH DATA BROWSER (STAF)</div>
@@ -1155,6 +1111,34 @@
         return;
       }
 
+      const wakil = {
+        noTenteraWakil: (document.getElementById("noTentWakil")?.value || "").trim().toUpperCase(),
+        noTelWakil: (document.getElementById("noTelWakil")?.value || "").trim(),
+        namaWakil: (document.getElementById("namaWakil")?.value || "").trim().toUpperCase(),
+        pasukanWakil: (document.getElementById("pasukanWakil")?.value || "").trim().toUpperCase()
+      };
+
+      if (!wakil.noTenteraWakil || !wakil.noTelWakil || !wakil.namaWakil || !wakil.pasukanWakil) {
+        alert("Sila lengkapkan semua maklumat wakil (No. Tentera, No. Telefon, Nama & Pasukan).");
+        return;
+      }
+
+      const senaraiSurat = [];
+      for (const k of document.querySelectorAll(".kad-surat")) {
+        const item = {
+          jenisSurat: (k.querySelector(".jenis-surat-item")?.value || "SURAT KUASA").trim().toUpperCase(),
+          kategori: (k.querySelector(".kategori-item")?.value || "LLP").trim().toUpperCase(),
+          noTenteraPemilik: (k.querySelector(".no-tent-pemilik-item")?.value || "").trim().toUpperCase(),
+          pasukanPemilik: (k.querySelector(".pasukan-pemilik-item")?.value || "").trim().toUpperCase(),
+          namaPemilik: (k.querySelector(".nama-pemilik-item")?.value || "").trim().toUpperCase()
+        };
+        if (!item.noTenteraPemilik || !item.pasukanPemilik || !item.namaPemilik) {
+          alert("Sila lengkapkan semua maklumat pemilik surat bagi setiap surat yang diambil.");
+          return;
+        }
+        senaraiSurat.push(item);
+      }
+
       const btn = document.getElementById("btnHantar");
       const teksAsal = btn ? btn.textContent : "SAHKAN & HANTAR REKOD";
       if (btn) {
@@ -1166,27 +1150,8 @@
         const kini = new Date();
         const { tarikhSahaja, tarikhMasa } = formatTarikhMY(kini);
         const idSesi = "SESI-" + kini.getTime().toString().slice(-6);
-
-        const wakil = {
-          noTenteraWakil: (document.getElementById("noTentWakil")?.value || "").trim().toUpperCase(),
-          noTelWakil: (document.getElementById("noTelWakil")?.value || "").trim(),
-          namaWakil: (document.getElementById("namaWakil")?.value || "").trim().toUpperCase(),
-          pasukanWakil: (document.getElementById("pasukanWakil")?.value || "").trim().toUpperCase()
-        };
-
         const kaedah = (document.getElementById("kaedahAmbil")?.value || "WAKIL PASUKAN / UNIT").trim().toUpperCase();
         const pengesahan = `DISAHKAN (${kaedah})`;
-
-        const senaraiSurat = [];
-        document.querySelectorAll(".kad-surat").forEach(k => {
-          senaraiSurat.push({
-            jenisSurat: k.querySelector(".jenis-surat-item")?.value || "SURAT KUASA",
-            kategori: k.querySelector(".kategori-item")?.value || "LLP",
-            noTenteraPemilik: (k.querySelector(".no-tent-pemilik-item")?.value || "").trim().toUpperCase(),
-            pasukanPemilik: (k.querySelector(".pasukan-pemilik-item")?.value || "").trim().toUpperCase(),
-            namaPemilik: (k.querySelector(".nama-pemilik-item")?.value || "").trim().toUpperCase()
-          });
-        });
 
         const barisBaru = senaraiSurat.map(s => ({
           idSesi,
@@ -1206,7 +1171,7 @@
         document.getElementById("borangPengeluaran").style.display = "none";
         document.getElementById("kotakBerjaya").style.display = "block";
         document.getElementById("teksBerjaya").innerHTML =
-          `Sebanyak <strong>${senaraiSurat.length} keping surat</strong> telah direkodkan${dihantar ? " ke <strong>Google Sheets</strong>" : " pada browser"}.<br>ID Sesi: <strong>${idSesi}</strong>`;
+          `Sebanyak <strong>${senaraiSurat.length} keping surat</strong> (Wakil: <strong>${wakil.namaWakil}</strong>) telah direkodkan${dihantar ? " ke <strong>Google Sheets</strong>" : " pada browser"}.<br>ID Sesi: <strong>${idSesi}</strong>`;
       } catch (err) {
         console.error("Ralat simpanRekod:", err);
         alert("Rekod disimpan pada browser ini, tetapi ada gangguan semasa menghantar ke Google Sheets.");
@@ -1316,6 +1281,41 @@
       }
     }
 
+    function formatWakilCell(r) {
+      const nama = (r.namaWakil || "").trim();
+      const noTent = (r.noTenteraWakil || "").trim();
+      const pasukan = (r.pasukanWakil || "").trim();
+      const noTel = (r.noTelWakil || "").trim();
+
+      if (!nama && !noTent && !pasukan && !noTel) {
+        return `<span class="badge-kosong">Tiada Details Wakil</span>`;
+      }
+
+      const metaParts = [];
+      if (noTent) metaParts.push(noTent);
+      if (pasukan) metaParts.push(pasukan);
+      const metaLine = metaParts.join(" • ");
+      const telLine = noTel ? `Tel: ${noTel}` : "";
+
+      return `
+        <div><strong>${nama || "TIADA NAMA"}</strong></div>
+        ${metaLine ? `<div style="font-size:11.5px; color:#475569;">${metaLine}</div>` : ""}
+        ${telLine ? `<div style="font-size:11.5px; color:#047857; font-weight:600;">${telLine}</div>` : ""}
+      `;
+    }
+
+    function formatPemilikCell(r) {
+      const nama = (r.namaPemilik || "").trim();
+      const noTent = (r.noTenteraPemilik || "").trim();
+      const pasukan = (r.pasukanPemilik || "").trim();
+      const subParts = [noTent, pasukan].filter(Boolean).join(" • ");
+
+      return `
+        <div><strong>${nama || "TIADA NAMA PEMILIK"}</strong></div>
+        ${subParts ? `<div style="font-size:11.5px; color:#475569;">${subParts}</div>` : ""}
+      `;
+    }
+
     function renderPaparanDashboard() {
       if (!stafSudahLogin()) return;
       const semua = rekodSemasa;
@@ -1368,7 +1368,7 @@
 
       const ditapis = rekodAsas.filter(r => {
         const okJ = jenis === "SEMUA" || r.jenisSurat === jenis;
-        const gabung = `${r.idSesi} ${r.noTenteraWakil} ${r.namaWakil} ${r.pasukanWakil} ${r.noTenteraPemilik} ${r.namaPemilik} ${r.pasukanPemilik}`.toLowerCase();
+        const gabung = `${r.idSesi} ${r.noTenteraWakil} ${r.namaWakil} ${r.pasukanWakil} ${r.noTelWakil} ${r.noTenteraPemilik} ${r.namaPemilik} ${r.pasukanPemilik}`.toLowerCase();
         const okC = !carian || gabung.includes(carian);
         return okJ && okC;
       });
@@ -1383,10 +1383,10 @@
         <tr>
           <td><strong>${r.idSesi}</strong></td>
           <td>${r.tarikhMasa}</td>
-          <td><div><strong>${r.namaWakil}</strong></div><div style="font-size:11.5px; color:#64748b;">${r.noTenteraWakil} • ${r.pasukanWakil} (${r.noTelWakil})</div></td>
-          <td>${r.jenisSurat}</td>
+          <td>${formatWakilCell(r)}</td>
+          <td><strong>${r.jenisSurat}</strong></td>
           <td>${r.kategori}</td>
-          <td><div><strong>${r.namaPemilik}</strong></div><div style="font-size:11.5px; color:#64748b;">${r.noTenteraPemilik} • ${r.pasukanPemilik}</div></td>
+          <td>${formatPemilikCell(r)}</td>
           <td style="font-size:12px;">${r.pengesahan}</td>
         </tr>
       `).join("");
