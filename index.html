@@ -432,6 +432,18 @@
       margin-bottom: 18px;
     }
 
+    .status-sync {
+      font-size: 12px;
+      font-weight: 700;
+      color: #047857;
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
     /* KALENDAR KEHADIRAN HARIAN STAF */
     .panel-kalendar {
       background: #f8fafc;
@@ -788,6 +800,13 @@
       </div>
 
       <div class="panel-staf">
+        <div class="status-sync">
+          <span id="labelStatusSync">Sumber data: Menyemak...</span>
+          <button type="button" class="btn btn-garis" style="padding:5px 11px; font-size:12px;" onclick="kemasKiniDashboard(true)">
+            Muat Semula Data Sheet
+          </button>
+        </div>
+
         <!-- KALENDAR KEHADIRAN HARIAN -->
         <div class="panel-kalendar">
           <div class="kepala-kalendar">
@@ -834,8 +853,8 @@
 
         <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; margin-bottom:14px;">
           <div style="display:flex; flex-wrap:wrap; gap:10px; flex:1;">
-            <input type="text" id="carianRekod" placeholder="Cari nama / no tentera / pasukan..." style="max-width:250px;" oninput="kemasKiniDashboard()" />
-            <select id="tapisJenis" style="max-width:200px;" onchange="kemasKiniDashboard()">
+            <input type="text" id="carianRekod" placeholder="Cari nama / no tentera / pasukan..." style="max-width:250px;" oninput="renderPaparanDashboard()" />
+            <select id="tapisJenis" style="max-width:200px;" onchange="renderPaparanDashboard()">
               <option value="SEMUA">Semua Jenis Surat</option>
               <option value="SURAT KUASA">Surat Kuasa</option>
               <option value="SURAT PINDAAN">Surat Pindaan</option>
@@ -844,7 +863,7 @@
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button class="btn btn-garis" onclick="eksportCSV()">Muat Turun CSV</button>
             <button class="btn btn-garis" onclick="window.print()">Cetak</button>
-            <button class="btn btn-garis" style="color:#dc2626;" onclick="padamData()">Padam Data</button>
+            <button class="btn btn-garis" style="color:#dc2626;" onclick="padamData()">Padam Cache Lokal</button>
           </div>
         </div>
 
@@ -891,7 +910,7 @@
       <div class="panel-staf" style="max-width:640px; margin:auto;">
         <div class="bar-seksyen">SANDARAN & PULIH DATA BROWSER (STAF)</div>
         <p style="font-size:13px; color:#475569;">
-          Rekod disimpan terus dalam <strong>localStorage</strong> browser ini. Gunakan butang di bawah untuk mengeksport salinan sandaran (<strong>.json</strong>) atau memulihkan rekod pada browser lain.
+          Rekod utama diselaraskan dengan <strong>Google Sheets</strong> dan turut disimpan sebagai cache lokal dalam <strong>localStorage</strong> browser ini. Gunakan butang di bawah untuk mengeksport salinan sandaran (<strong>.json</strong>) atau memulihkan rekod pada browser lain.
         </p>
         <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
           <button class="btn btn-utama" onclick="eksportJSON()">Muat Turun Sandaran (.json)</button>
@@ -908,6 +927,7 @@
   </main>
 
   <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2Z_Uvfxvvo0uHwOe8hgPNOpvf_3QM6imxkbSR8nW9S0jEtYGd2gXMfO9HMjHCEptnOw/exec";
     const PIN_STAF = "1234";
     const KUNCI_REKOD = "rekod_surat_browser_td_v1";
     const KUNCI_SESI_STAF = "sesi_staf_browser_td_v1";
@@ -916,6 +936,7 @@
     let halamanStafMenunggu = "dashboard";
     let instCartaJenis = null;
     let instCartaKategori = null;
+    let rekodSemasa = [];
 
     let tahunKalendar = new Date().getFullYear();
     let bulanKalendar = new Date().getMonth();
@@ -1079,7 +1100,7 @@
       };
     }
 
-    function ambilRekod() {
+    function ambilRekodLokal() {
       try {
         const mentah = localStorage.getItem(KUNCI_REKOD);
         if (!mentah) return [];
@@ -1090,11 +1111,40 @@
       }
     }
 
-    function simpanSenaraiRekod(senarai) {
+    function simpanSenaraiRekodLokal(senarai) {
       localStorage.setItem(KUNCI_REKOD, JSON.stringify(senarai));
     }
 
-    function simpanRekod(e) {
+    async function ambilRekodDariSheet() {
+      if (!SCRIPT_URL || SCRIPT_URL.includes("MASUKKAN_URL")) {
+        return { ok: false, data: ambilRekodLokal(), sumber: "Lokal (URL belum diset)" };
+      }
+      try {
+        const resp = await fetch(`${SCRIPT_URL}?t=${Date.now()}`, { method: "GET", cache: "no-store" });
+        const json = await resp.json();
+        if (json && json.status === "success" && Array.isArray(json.data)) {
+          simpanSenaraiRekodLokal(json.data);
+          return { ok: true, data: json.data, sumber: "Google Sheets (Terkini)" };
+        }
+        throw new Error(json && json.message ? json.message : "Respons tidak sah");
+      } catch (err) {
+        console.warn("Gagal ambil dari Google Sheets, guna cache lokal:", err);
+        return { ok: false, data: ambilRekodLokal(), sumber: "Cache Lokal (Gagal sambung Sheet)" };
+      }
+    }
+
+    async function hantarKeGoogleSheet(barisBaru) {
+      if (!SCRIPT_URL || SCRIPT_URL.includes("MASUKKAN_URL")) return false;
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ records: barisBaru })
+      });
+      return true;
+    }
+
+    async function simpanRekod(e) {
       if (e && typeof e.preventDefault === "function") {
         e.preventDefault();
       }
@@ -1109,7 +1159,7 @@
       const teksAsal = btn ? btn.textContent : "SAHKAN & HANTAR REKOD";
       if (btn) {
         btn.disabled = true;
-        btn.textContent = "Sedang Menyimpan...";
+        btn.textContent = "Sedang Menghantar ke Database...";
       }
 
       try {
@@ -1147,16 +1197,19 @@
           pengesahan
         }));
 
-        simpanSenaraiRekod([...barisBaru, ...ambilRekod()]);
-        if (stafSudahLogin()) kemasKiniDashboard();
+        const gabunganLokal = [...barisBaru, ...ambilRekodLokal()];
+        simpanSenaraiRekodLokal(gabunganLokal);
+        rekodSemasa = gabunganLokal;
+
+        const dihantar = await hantarKeGoogleSheet(barisBaru);
 
         document.getElementById("borangPengeluaran").style.display = "none";
         document.getElementById("kotakBerjaya").style.display = "block";
         document.getElementById("teksBerjaya").innerHTML =
-          `Sebanyak <strong>${senaraiSurat.length} keping surat</strong> telah disimpan dalam browser.<br>ID Sesi: <strong>${idSesi}</strong>`;
+          `Sebanyak <strong>${senaraiSurat.length} keping surat</strong> telah direkodkan${dihantar ? " ke <strong>Google Sheets</strong>" : " pada browser"}.<br>ID Sesi: <strong>${idSesi}</strong>`;
       } catch (err) {
         console.error("Ralat simpanRekod:", err);
-        alert("Rekod tidak dapat disimpan pada browser ini.");
+        alert("Rekod disimpan pada browser ini, tetapi ada gangguan semasa menghantar ke Google Sheets.");
       } finally {
         if (btn) {
           btn.disabled = false;
@@ -1183,24 +1236,24 @@
         bulanKalendar = 0;
         tahunKalendar++;
       }
-      renderKalendarKehadiran(ambilRekod());
+      renderKalendarKehadiran(rekodSemasa);
     }
 
     function pergiBulanSemasa() {
       const kini = new Date();
       tahunKalendar = kini.getFullYear();
       bulanKalendar = kini.getMonth();
-      renderKalendarKehadiran(ambilRekod());
+      renderKalendarKehadiran(rekodSemasa);
     }
 
     function pilihTarikhKalendar(tarikhStr) {
       tarikhDipilih = (tarikhDipilih === tarikhStr) ? null : tarikhStr;
-      kemasKiniDashboard();
+      renderPaparanDashboard();
     }
 
     function kosongkanPilihanTarikh() {
       tarikhDipilih = null;
-      kemasKiniDashboard();
+      renderPaparanDashboard();
     }
 
     function renderKalendarKehadiran(semuaRekod) {
@@ -1263,9 +1316,9 @@
       }
     }
 
-    function kemasKiniDashboard() {
+    function renderPaparanDashboard() {
       if (!stafSudahLogin()) return;
-      const semua = ambilRekod();
+      const semua = rekodSemasa;
       const hariIniStr = formatTarikhMY(new Date()).tarikhSahaja;
 
       const rekodHariIni = semua.filter(r => r.tarikhSahaja === hariIniStr);
@@ -1339,6 +1392,22 @@
       `).join("");
     }
 
+    async function kemasKiniDashboard(paksaSync = false) {
+      if (!stafSudahLogin()) return;
+      const labelSync = document.getElementById("labelStatusSync");
+      if (labelSync) labelSync.textContent = paksaSync ? "Sumber data: Sedang memuat semula dari Google Sheets..." : "Sumber data: Menyemak Google Sheets...";
+
+      if (!rekodSemasa.length) {
+        rekodSemasa = ambilRekodLokal();
+        renderPaparanDashboard();
+      }
+
+      const hasil = await ambilRekodDariSheet();
+      rekodSemasa = hasil.data;
+      if (labelSync) labelSync.textContent = `Sumber data: ${hasil.sumber}`;
+      renderPaparanDashboard();
+    }
+
     function janaQR() {
       if (!stafSudahLogin()) return;
       const bekas = document.getElementById("bekasQR");
@@ -1349,7 +1418,7 @@
 
     function eksportCSV() {
       if (!stafSudahLogin()) return;
-      const data = ambilRekod();
+      const data = rekodSemasa.length ? rekodSemasa : ambilRekodLokal();
       if (!data.length) {
         alert("Tiada rekod untuk dimuat turun.");
         return;
@@ -1376,7 +1445,7 @@
 
     function eksportJSON() {
       if (!stafSudahLogin()) return;
-      const data = ambilRekod();
+      const data = rekodSemasa.length ? rekodSemasa : ambilRekodLokal();
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -1395,16 +1464,18 @@
       if (!fail) return;
 
       const reader = new FileReader();
-      reader.onload = function (evt) {
+      reader.onload = async function (evt) {
         try {
           const dataMasuk = JSON.parse(evt.target.result);
           if (!Array.isArray(dataMasuk)) {
             alert("Format fail JSON tidak sah.");
             return;
           }
-          simpanSenaraiRekod(dataMasuk);
-          kemasKiniDashboard();
-          document.getElementById("statusSandaran").textContent = `Berjaya memulihkan ${dataMasuk.length} rekod ke browser ini.`;
+          simpanSenaraiRekodLokal(dataMasuk);
+          rekodSemasa = dataMasuk;
+          await hantarKeGoogleSheet(dataMasuk);
+          renderPaparanDashboard();
+          document.getElementById("statusSandaran").textContent = `Berjaya memulihkan ${dataMasuk.length} rekod ke browser dan menyelaraskan ke Google Sheets.`;
         } catch {
           alert("Gagal membaca fail JSON.");
         }
@@ -1414,10 +1485,11 @@
 
     function padamData() {
       if (!stafSudahLogin()) return;
-      if (confirm("Padam semua rekod pada browser ini?")) {
+      if (confirm("Padam cache rekod pada browser ini sahaja? (Data dalam Google Sheets tidak dipadam)")) {
         localStorage.removeItem(KUNCI_REKOD);
+        rekodSemasa = [];
         tarikhDipilih = null;
-        kemasKiniDashboard();
+        renderPaparanDashboard();
       }
     }
 
