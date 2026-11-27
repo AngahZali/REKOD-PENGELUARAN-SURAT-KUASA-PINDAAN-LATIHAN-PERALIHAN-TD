@@ -883,7 +883,7 @@
   </main>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2Z_Uvfxvvo0uHwOe8hgPNOpvf_3QM6imxkbSR8nW9S0jEtYGd2gXMfO9HMjHCEptnOw/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9GTwUg7fS8Twg2FhopbICB-zSzMmsa2BclCXPM3mVapp4ORurfgKZRyex_uxuoN1vAw/exec";
     const PIN_STAF = "1234";
     const KUNCI_REKOD = "rekod_surat_browser_td_v1";
     const KUNCI_SESI_STAF = "sesi_staf_browser_td_v1";
@@ -1078,11 +1078,12 @@
       try {
         const resp = await fetch(`${SCRIPT_URL}?t=${Date.now()}`, { method: "GET", cache: "no-store" });
         const json = await resp.json();
-        if (json && json.status === "ok" && Array.isArray(json.data)) {
+        const isSuccess = json && (json.status === "success" || json.status === "ok") && Array.isArray(json.data);
+        if (isSuccess) {
           simpanSenaraiRekodLokal(json.data);
           return { ok: true, data: json.data, sumber: "Google Sheets (Terkini)" };
         }
-        throw new Error(json && json.message ? json.message : "Respons tidak sah");
+        throw new Error(json && (json.message || json.mesej) ? (json.message || json.mesej) : "Respons tidak sah");
       } catch (err) {
         console.warn("Gagal ambil dari Google Sheets, guna cache lokal:", err);
         return { ok: false, data: ambilRekodLokal(), sumber: "Cache Lokal (Gagal sambung Sheet)" };
